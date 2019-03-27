@@ -30,13 +30,14 @@ being named `cargo-cache` and the volume for project artifacts named `precious-t
 (Note that volumes can be created automatically on the first launch.) The corresponding CLI
 command to create the container will look as follows:
 
-```shell
-docker run \
+```bash
+docker run -it \
   -v /my/precious/project:/project:ro \
   -v cargo-cache:/cargo \
   -v precious-target:/target \
   --name precious \
-  slowli/exonum-env:latest 
+  slowli/exonum-env:latest \
+  bash
 ```
 
 ### Attach to the container
@@ -44,7 +45,7 @@ docker run \
 To run commands within the container (e.g., Cargo tests), you can
 [attach to it][docker-attach] via
 
-```
+```bash
 docker attach $name
 ```
 
