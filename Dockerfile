@@ -1,9 +1,9 @@
 FROM ubuntu:16.04
 
-ENV RUST_VERSION=1.32.0 \
-  ROCKSDB_LIB_DIR=/usr/lib \
+ENV ROCKSDB_LIB_DIR=/usr/lib \
   SNAPPY_LIB_DIR=/usr/lib/x86_64-linux-gnu \
   CARGO_TARGET_DIR=../target
+ARG RUST_VERSION=1.32.0
 
 RUN apt-get update && \
   apt-get install -y --no-install-recommends \
@@ -30,6 +30,8 @@ RUN apt-get update && \
     protobuf-compiler
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain $RUST_VERSION && \
   ln -s $HOME/.cargo/bin/* /usr/bin && \
+  mkdir -p /cargo/git && \
   ln -s /cargo/git $HOME/.cargo/git && \
+  mkdir -p /cargo/registry && \
   ln -s /cargo/registry $HOME/.cargo/registry
 WORKDIR /project
