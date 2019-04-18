@@ -1,4 +1,4 @@
-dist: trusty
+dist: xenial
 
 services:
   - docker
@@ -12,6 +12,23 @@ branches:
     - /-release$/
 
 language: bash
+
+env:
+  global:
+    - DOCKER_BUILDKIT=1
+    - DOCKER_VER=5:18.09.5~3-0~ubuntu-xenial
+
+# Install Docker 18.09+, which is necessary for experimental Dockerfile features.
+before_install:
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce=$DOCKER_VER
+  - >
+    sudo bash -c 'echo "{ \"experimental\": true, \"features\": { \"buildkit\": true } }" > /etc/docker/daemon.json'
+  - sudo systemctl restart docker
+  - docker version
+  - docker info
 
 script:
   - (cd dev && docker build -t exonum-env .)
