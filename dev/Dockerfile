@@ -2,7 +2,7 @@ FROM ubuntu:16.04
 
 ENV ROCKSDB_LIB_DIR=/usr/lib \
   SNAPPY_LIB_DIR=/usr/lib/x86_64-linux-gnu \
-  CARGO_TARGET_DIR=../target
+  CARGO_TARGET_DIR=/target
 ARG RUST_VERSION=1.34.0
 
 RUN apt-get update && \
@@ -38,3 +38,4 @@ RUN curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain $RUST_VERSI
   mkdir -p /cargo/registry && \
   ln -s /cargo/registry $HOME/.cargo/registry
 WORKDIR /project
+VOLUME ["/cargo", "/target", "/project"]
