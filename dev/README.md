@@ -61,8 +61,37 @@ start the container with [the `-p` flag][docker-expose].
 Note that the server in the container should bind to an externally visible
 interface (e.g., `0.0.0.0`).
 
+## Using as a builder
+
+The image can be used in multistage builds as a heavyweight builder.
+It is especially efficient to bind `/cargo` and `/target` mounting points
+to [cache mounts][buildkit-cache] available in Docker 18.09+:
+
+```dockerfile
+# syntax=docker/dockerfile:experimental
+FROM slowli/exonum-env:latest AS builder
+
+RUN --mount=type=cache,id=cargo,target=/cargo \
+  --mount=type=cache,id=artifacts,target=/target \
+  cargo install \
+    --root /usr/local \
+    --version $version_of_your_crate \
+    $your_exonum_crate
+
+FROM slowli/exonum-prod:latest
+COPY --from=builder /usr/local/bin/* /usr/bin/
+```
+
+Instead of installing from crates.io, you may want to install from git for finer-grained control
+or privacy reasons; see [`cargo install` docs][cargo-install] for more details.
+Note that experimental Docker features include [SSH forwarding][buildkit-ssh],
+which is useful for building from a private git repo.
+
 [docker-volume]: https://docs.docker.com/storage/volumes/
 [docker-mount]: https://docs.docker.com/storage/bind-mounts/
 [docker-attach]: https://docs.docker.com/engine/reference/commandline/attach/
 [docker-expose]: https://docs.docker.com/engine/reference/commandline/run/#publish-or-expose-port--p---expose
 [docker-multistage]: https://docs.docker.com/develop/develop-images/multistage-build/
+[buildkit-cache]: https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/experimental.md#run---mounttypecache
+[cargo-install]: https://doc.rust-lang.org/cargo/commands/cargo-install.html
+[buildkit-ssh]: https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/experimental.md#run---mounttypessh
