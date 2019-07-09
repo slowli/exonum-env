@@ -3,7 +3,8 @@
 This Docker image, `slowli/exonum-env`, allows to quickly deploy or test Exonum apps.
 The image does not contain Exonum itself (it's a library), but rather dependencies
 necessary to build a reasonable majority of Exonum apps, such as Rust, RocksDB, libsodium
-and Protobuf.
+and Protobuf. The image is based on Ubuntu 16.04 Xenial. It contains one of the latest
+stable Rust toolchains. Docker tags for the image are based on the packaged Rust toolchain.
 
 Because of large size, this image is more fitting for use as a building container
 (e.g., in [multistage builds][docker-multistage]) than as a final image for an Exonum app.
