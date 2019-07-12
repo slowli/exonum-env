@@ -3,7 +3,6 @@ FROM ubuntu:16.04
 ENV ROCKSDB_LIB_DIR=/usr/lib \
   SNAPPY_LIB_DIR=/usr/lib/x86_64-linux-gnu \
   CARGO_TARGET_DIR=/target
-ARG RUST_VERSION=1.34.0
 
 RUN apt-get update && \
   apt-get install -y --no-install-recommends \
@@ -31,6 +30,8 @@ RUN apt-get update && \
     librocksdb5.17 \
     protobuf-compiler \
     clang-8
+
+ARG RUST_VERSION=1.36.0
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain $RUST_VERSION && \
   ln -s $HOME/.cargo/bin/* /usr/bin && \
   mkdir -p /cargo/git && \
